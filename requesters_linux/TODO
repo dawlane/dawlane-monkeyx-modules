@@ -1,0 +1,5 @@
+TO DO:
+		Check for memory leaks. Kind of tricky with all the noise from Gtk and glib and the suppersion files available do not work well.
+		
+		Figure out why a GTK+3 application on a GTK+2 distribution has problems not detecting recent files and the miss placement of the
+		file chooser dialog when GTK_FILE_CHOOSER_ACTION_OPEN is used. Both issues so far are with Linux Mint.
