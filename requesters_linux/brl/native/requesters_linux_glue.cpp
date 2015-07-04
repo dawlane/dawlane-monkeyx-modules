@@ -1,5 +1,5 @@
 /*
-	Requesert Linux Mojo function bindings v0.4
+	Requesert Linux Mojo function bindings v0.5
 	by J.Cook aka dawlane
 */
 

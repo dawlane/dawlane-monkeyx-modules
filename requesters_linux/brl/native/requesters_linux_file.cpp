@@ -1,5 +1,5 @@
 /*
-	Requester Linux File/Directory Selector Dialog v0.4
+	Requester Linux File/Directory Selector Dialog v0.5
 	by dawlane
 */
 
@@ -7,6 +7,7 @@ static void GTK_callBackShow(GtkWidget *widget, gpointer *_userData)
 {
     bool b = _userData;
     gtk_file_chooser_set_show_hidden(GTK_FILE_CHOOSER(widget),b);
+    gtk_window_set_keep_above(GTK_WINDOW(widget),TRUE);
 }
 
 String GTK_FileChooserDialog(String title,String filterStr,int save, FilePathData *filePathData)
@@ -90,7 +91,6 @@ String GTK_FileChooserDialog(String title,String filterStr,int save, FilePathDat
 
     // Set up the file chooser dialog
     dialog = gtk_file_chooser_dialog_new(NULL,NULL,action,("_Cancel"),GTK_RESPONSE_CANCEL,(confirmButton),GTK_RESPONSE_ACCEPT,NULL);
-    g_object_ref_sink(dialog);
 
     // Set the window
     gtk_window_set_title(GTK_WINDOW(dialog),title.ToCString<char>());
@@ -151,8 +151,6 @@ String GTK_FileChooserDialog(String title,String filterStr,int save, FilePathDat
         }
         if (filterIndex > -1) gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), g_array_index(filterList, GtkFileFilter*, filterIndex));
     }
-    // Should check that there are no memory leaks. If I read correctly the docs say the file chooser takes ownership of filters, so they should be deleted when it goes.
-    if (filterList != NULL) g_array_free(filterList, TRUE);
 
     // Show and retrieve the data from the dialog
     int response = gtk_dialog_run(GTK_DIALOG(dialog));
@@ -163,9 +161,13 @@ String GTK_FileChooserDialog(String title,String filterStr,int save, FilePathDat
         returnStr = fname;
         g_free(fname);
     }
+
     // Cleanup and return result
+    if (filterList != NULL) g_array_free(filterList, TRUE);
     if (path != NULL) g_free(path);
-    pannelEnd(dialog);
+    gtk_widget_destroy(dialog);
+    pannelEnd();
+    
     return returnStr;
 }
 

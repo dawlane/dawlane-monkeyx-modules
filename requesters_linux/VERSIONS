@@ -1,3 +1,7 @@
+v0.5
+	Hopefully fixed some memory leaks by removing unnecessary g_object_ref_sink/g_object_unref
+	Removed g_flush() and replaced with a g_main_context_iteration to process any remaning events.
+	Moved gtk_widget_destroy from pannelEnd into each function.
 v0.4
 	Initial release
 

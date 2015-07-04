@@ -1,4 +1,4 @@
-Requester Linux v0.4
+Requester Linux v0.5
 
 	The requesters module is strictly for GLFW PC Desktops. The offical release from Blitz Research only support Window and Apple OS X.
 	You will need to instal the GTK+2/3 development libraries for Linux.

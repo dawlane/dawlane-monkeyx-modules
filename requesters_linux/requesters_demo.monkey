@@ -1,9 +1,9 @@
 #REM
-	Requester Linux v0.4
+	Requester Linux v0.5
 
 	The requesters module is strictly for GLFW PC Desktops, but with a bit of file editing the Linux GTK version will work with the C++Tool.
 	The offical release from Blitz Research only support Window and Apple OS X.
-	You will need to instal the GTK+2/3 development libraries for Linux.
+	You will need to install the GTK+2/3 development libraries for Linux.
 	To make it simple without having to hack the Linux Makefiles. Modify the files below and rebuild transcc
 
 	In src/trans/builders directory
@@ -71,57 +71,62 @@ Import os
 Import brl.requesters
 
 Class MyApp Extends App
-	
-	Field dsktp:DisplayMode
 
-    Method OnCreate()
-    	dsktp = DesktopMode() ' Get the current desktop resolution so it can be restored. Do not use ExitApp or EndApp before you have restored with SetDeviceWindow
-    	'SetDeviceWindow(1024,768,1)	'Uncomment for full screen, but remember to uncomment the SetDeviceWindow in the ShutDown method
-    	SetUpdateRate(30)
-    	Local homePath:String = GetEnv("HOME")
-    	Local file:String = ""
-    	Local dir:String = ""
-    	Local confirm:Int = 0
-    	Local proceed:Int = 0
-        Local filter:="Image Files:png,jpg,bmp;Text Files:txt,doc,rtf;All Files:*"
-        
-        ' No path, but hidden file with a wildcard and extension, so open the user home directory with hidden attributes set.
-        ' As the filter list is being passed and the extension used is in there; set the filter to show directory and txt files only.
-        file = RequestFile( "Select file to save",filter, True, ".*.txt")
-        If file Notify "Notice: RequestFile Save",file
-        
-       	' Full path being passed with wildcard and filter. As jpg is in the filter list, it will be shown.  
-        file = RequestFile( "Select file to open",filter, False, homePath+"/Pictures/*.jpg")
-        If file Notify "Notice: RequestFile Open",file
-        
-        dir = RequestDir("Select Directory to open", "/opt")
-        If dir Notify "Notice: RequestDir",dir
-        If file<>"" Or dir <> "" Then confirm = Confirm("Confirm?","Confirm: did the notice display the correct paths?", False)       
-        If confirm 
-        	Notify "Notify","You said that the file paths were correct"
-        	proceed = Proceed("Proceed?","Do you wish to display the file selected?", True)
-        	If proceed = 1
-        		Notify "Notify","Only joking. I cannot be bothered to write the code for it."
-        	Else
-       			If proceed = 0 Notify "Notify","So you don't like my code then?" Else Notify "Notify","Guess I will never know"
-        	Endif
-        Else
-        	Notify "Notify","Don't just stand there. Call support!"
-       Endif    
-    End
+	Field dsktp:DisplayMode
+	Field homePath:String = GetEnv("HOME")
+	Field file:String = ""
+	Field dir:String = ""
+	Field confirm:Int = 0
+	Field proceed:Int = 0
+	Field start:Bool
+	Field filter:="Image Files:png,jpg,bmp;Text Files:txt,doc,rtf;All Files:*"
+
+	Method OnCreate()
+		dsktp = DesktopMode() ' Get the current desktop resolution so it can be restored. Do not use ExitApp or EndApp before you have restored with SetDeviceWindow
+		'SetDeviceWindow(1024,768,1)	'Uncomment for full screen, but remember to uncomment the SetDeviceWindow in the ShutDown method
+		SetUpdateRate(30)
+    	HideMouse()
+	End
     
-    Method OnUpdate()
-   		If KeyDown(KEY_ESCAPE) Then ShutDown()
-    End
+	Method OnUpdate()
+		If KeyDown(KEY_SPACE) And start = False
+			start = True
+			ShowMouse()
+			' No path, but hidden file with a wildcard and extension, so open the user home directory with hidden attributes set.
+			' As the filter list is being passed and the extension used is in there; set the filter to show directory and txt files only.
+			file = RequestFile( "Select file to save",filter, True, ".*.txt")
+			If file Notify "Notice: RequestFile Save",file
+
+			' Full path being passed with wildcard and filter. As jpg is in the filter list, it will be shown.  
+			file = RequestFile( "Select file to open",filter, False, homePath+"/Pictures/*.jpg")
+			If file Notify "Notice: RequestFile Open",file
+			dir = RequestDir("Select Directory to open", "/opt")
+			If dir Notify "Notice: RequestDir",dir
+			If file<>"" Or dir <> "" Then confirm = Confirm("Confirm?","Confirm: did the notice display the correct paths?", False)       
+			If confirm 
+				Notify "Notify","You said that the file paths were correct"
+				proceed = Proceed("Proceed?","Do you wish to display the file selected?", True)
+				If proceed = 1
+					Notify "Notify","Only joking. I cannot be bothered to write the code for it."
+				Else
+					If proceed = 0 Notify "Notify","So you don't like my code then?" Else Notify "Notify","Guess I will never know"
+				Endif
+			Else
+					Notify "Notify","Don't just stand there. Call support!"
+			Endif
+		Endif
+		If KeyDown(KEY_ESCAPE) Then ShutDown()
+	End
     
-    Method OnRender()
-    	DrawText("Press Escape key to exit", (DeviceWidth()/2)-80,DeviceHeight()/2)
-    End
-    
-    Method ShutDown()
-    	'SetDeviceWindow(dsktp.Width, dsktp.Height,1)
-    	EndApp()
-    End       
+	Method OnRender()
+		DrawText("Press Space key to start",  (DeviceWidth()/2)-80,(DeviceHeight()/2)-20)
+		DrawText("Press Escape key to exit", (DeviceWidth()/2)-80,DeviceHeight()/2)
+	End
+
+	Method ShutDown()
+		'SetDeviceWindow(dsktp.Width, dsktp.Height,1)
+		EndApp()
+	End       
 End
 
 Function Main()

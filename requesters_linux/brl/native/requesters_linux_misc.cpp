@@ -1,5 +1,5 @@
 /*
-	Requester Linux Miscellaneous Data and Functions v0.4
+	Requester Linux Miscellaneous Data and Functions v0.5
 	by J.Cook aka dawlane
 */
 
@@ -103,10 +103,8 @@ static bool pannelBegin()
 }
 
 // Close the dialog
-static void pannelEnd(GtkWidget *widget)
+static void pannelEnd()
 {
-    gtk_widget_destroy(widget);
-    g_object_unref(widget);
-    gdk_flush();
+    while (g_main_context_iteration(NULL, false));
 }
 

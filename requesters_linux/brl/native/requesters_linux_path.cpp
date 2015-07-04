@@ -1,5 +1,5 @@
 /*
-	Requester Linux Resolve File Paths v0.4
+	Requester Linux Resolve File Paths v0.5
 	by J.Cook aka dawlane
 */
 
